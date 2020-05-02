@@ -25,11 +25,24 @@ jobs:
           pip install -r dev.requirements.txt
       - name: Test with pytest
         run: |
-          py.test --cov-report term --cov=ci_benchmark ./tests
-      - name: Send coverage
+          py.test --cov-report xml --cov-report term --cov=ci_benchmark ./tests
+      - name: Codecov
         if: matrix.python-version == '3.8'
         run: |
           codecov -t ${{ secrets.CODECOV_TOKEN }}
+      - name: Coveralls
+        if: matrix.python-version == '3.8'
+        run: |
+          coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      - name: DeepSource
+        if: matrix.python-version == '3.8'
+        run: |
+          curl https://deepsource.io/cli | sh
+          ./bin/deepsource report --analyzer test-coverage --key python --value-file ./coverage.xml
+        env:
+          DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
 
   lint:
     runs-on: ubuntu-latest

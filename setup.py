@@ -3,6 +3,7 @@ import os
 import setuptools
 
 with open(os.path.join(os.path.dirname(__file__), "README.md"), "r") as readme:
+    # pylint: disable=invalid-name
     long_description = readme.read()
 
 setuptools.setup(
