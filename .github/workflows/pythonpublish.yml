@@ -28,5 +28,6 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
           TWINE_REPOSITORY: testpypi
         run: |
+          sed -i "s#version=\"DEV\",#version=\"${GITHUB_REF##*/}\",#g" setup.py
           python setup.py sdist bdist_wheel
           twine upload dist/*
