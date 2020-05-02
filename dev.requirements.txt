@@ -1,0 +1,12 @@
+# Setup dependencies
+-e .
+
+# Linting
+pylint>=2.4.2,<2.5.0
+pylint-quotes==0.2.1
+
+# Publish
+twine>=3.0.0,<4.0.0
+
+# Coverage
+pytest-cov>=2.5.0,<3.0.0
