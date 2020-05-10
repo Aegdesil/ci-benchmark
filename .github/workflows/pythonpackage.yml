@@ -5,6 +5,10 @@ name: tests
 
 on:
   push:
+    branches:
+      - gh-*
+  release:
+    types: [created]
 
 jobs:
   test:

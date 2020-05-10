@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy:
-
+    needs: [test, lint]
     runs-on: ubuntu-latest
 
     steps:
