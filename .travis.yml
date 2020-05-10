@@ -1,0 +1,41 @@
+language: python
+
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
+
+if: branch =~ /^tr-.*/ OR tag =~ /.*\.tr/
+install: pip install -r dev.requirements.txt
+script: py.test --cov-report xml --cov-report term --cov=ci_benchmark ./tests
+after_script:
+  - bash <(curl -s https://codecov.io/bash)
+  - coveralls
+  - |
+    curl https://deepsource.io/cli | sh
+    ./bin/deepsource report --analyzer test-coverage --key python --value-file ./coverage.xml
+
+jobs:
+  include:
+    - stage: test
+      name: Linting
+      install: pip install -r dev.requirements.txt
+      script: pylint --load-plugins pylint_quotes ci_benchmark tests
+    - stage: deploy
+      name: Upload to PyPI
+      install: skip
+      script: skip
+      after_script: skip
+      before_deploy:
+        - sed -i "s|version=\"DEV\"|version=\"${TRAVIS_TAG%%\.tr}\"|g" setup.py
+        - python setup.py sdist bdist_wheel
+      deploy:
+        provider: pypi
+        user: "__token__"
+        password: ${PYPI_TOKEN}
+        on:
+          tags: true
+
+stages:
+  - test
+  - deploy
